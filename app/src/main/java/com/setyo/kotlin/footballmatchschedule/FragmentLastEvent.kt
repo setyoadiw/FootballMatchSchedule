@@ -1,14 +1,19 @@
 package com.setyo.kotlin.footballmatchschedule
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.setyo.kotlin.footballmatchschedule.Model.EventSchedule.EventsItem
 import kotlinx.android.synthetic.main.fragment_last_event.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.singleTop
+import org.jetbrains.anko.support.v4.intentFor
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,12 +51,37 @@ class FragmentMain : Fragment() , MainView{
 
     }
 
+    private fun partItemClicked(partItem : EventsItem) {
+
+        val intent = Intent(requireContext(), DetailActivity::class.java)
+        intent.putExtra("date",partItem.dateEvent)
+        intent.putExtra("hometeam",partItem.strHomeTeam)
+        intent.putExtra("awayteam",partItem.strAwayTeam)
+        intent.putExtra("homescore",partItem.intHomeScore)
+        intent.putExtra("awayscore",partItem.intAwayScore)
+        intent.putExtra("idhome",partItem.idHomeTeam)
+        intent.putExtra("idaway",partItem.idAwayTeam)
+        intent.putExtra("homegk",partItem.strHomeLineupGoalkeeper)
+        intent.putExtra("homedf",partItem.strHomeLineupDefense)
+        intent.putExtra("homemf",partItem.strHomeLineupMidfield)
+        intent.putExtra("homefw",partItem.strHomeLineupForward)
+        intent.putExtra("awaygk",partItem.strAwayLineupGoalkeeper)
+        intent.putExtra("awaydf",partItem.strAwayLineupDefense)
+        intent.putExtra("awaymf",partItem.strAwayLineupMidfield)
+        intent.putExtra("awayfw",partItem.strAwayLineupForward)
+        startActivity(intent)
+
+    }
+
     override fun berhasil(data: ArrayList<EventsItem>) {
         //masukkan ke adapter
-        var LastEventAdapter = FootballAdapter(requireContext(),data)
+//        var LastEventAdapter = FootballAdapter(requireContext(),data)
         //adapter masukkan ke recyclerview
-        recyclerview.adapter = LastEventAdapter
+
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
+//        recyclerview.adapter = LastEventAdapter
+
+        recyclerview.adapter = FootballAdapter(requireContext(),data, { partItem : EventsItem -> partItemClicked(partItem) } )
 
     }
 
